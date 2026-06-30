@@ -240,11 +240,33 @@ p, span, button, input { font-size: 21px; font-family: 'Montserrat', sans-serif;
 #submit-guess-btn:hover { background: #22a1b9; transform: translateY(-2px); }
 
 #hint-display {
-  margin-top: 35px;
-  min-height: 80px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px; 
+  margin-top: 30px;
+}
+
+.status-message {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.success-status {
+  color: #28a745; 
+}
+
+.error-status {
+  color: #D32F2F; 
+}
+
+.hint-text {
+  font-size: 19px;
+  color: #1C3F60;
   font-style: italic;
-  font-weight: 500;
-  line-height: 1.6;
+  max-width: 90%;
+  line-height: 1.5;
+  text-align: center;
 }
 
 /* === KHU VỰC CÁC NÚT ĐIỀU KHIỂN SAU KHI ĐOÁN (HÀNG ĐẦU/CUỐI) === */

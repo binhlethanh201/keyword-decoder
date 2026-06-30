@@ -1,14 +1,14 @@
 // === HỆ THỐNG ÂM THANH & NHẠC NỀN ===
-const sfxClick = new Audio('sounds/popClick.mp3');
-const sfxCorrect = new Audio('sounds/correct.mp3');
-const sfxWrong = new Audio('sounds/wrong.mp3');
-const sfxTimeout = new Audio('sounds/timeout.mp3');
+const sfxClick = new Audio("sounds/popClick.mp3");
+const sfxCorrect = new Audio("sounds/correct.mp3");
+const sfxWrong = new Audio("sounds/wrong.mp3");
+const sfxTimeout = new Audio("sounds/timeout.mp3");
 // Lưu ý: Tên file lấy theo đúng cấu trúc ảnh chụp là jackport.mp3
-const sfxJackpot = new Audio('sounds/jackport.mp3'); 
+const sfxJackpot = new Audio("sounds/jackport.mp3");
 
 // Khai báo 2 bài nhạc nền BGM
-const bgmHappy = new Audio('sounds/Happy(Instrumental).mp3');
-const bgmJustCloud = new Audio('sounds/JustACloudAway(Instrumental).mp3');
+const bgmHappy = new Audio("sounds/Happy(Instrumental).mp3");
+const bgmJustCloud = new Audio("sounds/JustACloudAway(Instrumental).mp3");
 
 // Cấu hình lặp lại cho nhạc nền
 bgmHappy.loop = true;
@@ -20,8 +20,8 @@ sfxCorrect.volume = 0.6;
 sfxWrong.volume = 0.5;
 sfxTimeout.volume = 0.6;
 sfxJackpot.volume = 0.7;
-bgmHappy.volume = 0.2;       
-bgmJustCloud.volume = 0.18;   
+bgmHappy.volume = 0.2;
+bgmJustCloud.volume = 0.18;
 
 // Hàm tiện ích để tắt toàn bộ BGM trước khi chuyển bài
 function stopAllBGM() {
@@ -38,18 +38,18 @@ const mainLayout = document.getElementById("main-layout");
 const skipButton = document.getElementById("skip-button");
 const backToIntroBtn = document.getElementById("back-to-intro-btn");
 
-const timerDisplay = document.getElementById('timer');
-const maskedPhraseDisplay = document.getElementById('masked-phrase');
-const guessInput = document.getElementById('guess-input');
-const submitGuessBtn = document.getElementById('submit-guess-btn');
-const hintDisplay = document.getElementById('hint-display');
+const timerDisplay = document.getElementById("timer");
+const maskedPhraseDisplay = document.getElementById("masked-phrase");
+const guessInput = document.getElementById("guess-input");
+const submitGuessBtn = document.getElementById("submit-guess-btn");
+const hintDisplay = document.getElementById("hint-display");
 
-const actionButtons = document.getElementById('action-buttons');
-const retryBtn = document.getElementById('retry-btn');
-const backSelectBtn = document.getElementById('back-select-btn');
-const abortBtn = document.getElementById('abort-btn');
-const questionButtonsGrid = document.getElementById('question-buttons-grid');
-const selectionTitle = document.getElementById('selection-title');
+const actionButtons = document.getElementById("action-buttons");
+const retryBtn = document.getElementById("retry-btn");
+const backSelectBtn = document.getElementById("back-select-btn");
+const abortBtn = document.getElementById("abort-btn");
+const questionButtonsGrid = document.getElementById("question-buttons-grid");
+const selectionTitle = document.getElementById("selection-title");
 
 const nohuModal = document.getElementById("nohu-modal");
 
@@ -59,7 +59,7 @@ const keywords = [
   "Nhà nước pháp quyền",
   "Dân biết dân bàn",
   "Chế độ công hữu",
-  "Bình đẳng xã hội"
+  "Bình đẳng xã hội",
 ];
 
 const hints = [
@@ -67,15 +67,15 @@ const hints = [
   "Công cụ quản lý xã hội hiện đại, nơi mọi hành vi đều phải tuân thủ khuôn khổ của pháp luật.",
   "Phương châm thực hành dân chủ trực tiếp tại cơ sở.",
   "Nền tảng kinh tế để bảo đảm dân chủ XHCN là dân chủ cho đa số, không bị túi tiền chi phối.",
-  "Mục tiêu hướng tới sự công bằng, không áp bức bóc lột trong xã hội XHCN."
+  "Mục tiêu hướng tới sự công bằng, không áp bức bóc lột trong xã hội XHCN.",
 ];
 
 // === TRẠNG THÁI GAME ===
 let currentKeywordIndex = 0;
-let currentKeyword = '';
+let currentKeyword = "";
 let timer = 45;
 let timerInterval = null;
-let guessedLetters = new Set(); 
+let guessedLetters = new Set();
 let questionStatuses = ["idle", "idle", "idle", "idle", "idle"];
 
 // === KHỞI TẠO GAME & SỰ KIỆN ===
@@ -85,11 +85,18 @@ document.addEventListener("DOMContentLoaded", () => {
   nohuModal.classList.add("hidden");
 
   // Bật nhạc nền trang chủ khi người dùng tương tác (Browser policy)
-  document.body.addEventListener('click', () => {
-    if (bgmHappy.paused && introScreen.classList.contains("hidden") === false) {
-        bgmHappy.play().catch(e => console.log("Audio autoplay blocked", e));
-    }
-  }, { once: true });
+  document.body.addEventListener(
+    "click",
+    () => {
+      if (
+        bgmHappy.paused &&
+        introScreen.classList.contains("hidden") === false
+      ) {
+        bgmHappy.play().catch((e) => console.log("Audio autoplay blocked", e));
+      }
+    },
+    { once: true },
+  );
 
   // Từ Intro -> Màn chọn câu hỏi
   skipButton.addEventListener("click", () => {
@@ -105,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sfxClick.play();
     selectionScreen.classList.add("hidden");
     introScreen.classList.remove("hidden");
-    
+
     stopAllBGM();
     bgmHappy.play();
   });
@@ -120,8 +127,8 @@ document.addEventListener("DOMContentLoaded", () => {
     sfxClick.currentTime = 0;
     sfxClick.play();
     startRound();
-  }); 
-  
+  });
+
   backSelectBtn.addEventListener("click", goBackToSelection);
   abortBtn.addEventListener("click", goBackToSelection);
 
@@ -145,7 +152,12 @@ function goBackToSelection() {
 
 // Loại bỏ dấu tiếng Việt
 function normalize(str) {
-  return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").trim();
+  return str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .trim();
 }
 
 function closeNoHuModal() {
@@ -160,13 +172,14 @@ function showSelectionScreen() {
   clearInterval(timerInterval);
   mainLayout.classList.add("hidden");
   selectionScreen.classList.remove("hidden");
-  
+
   stopAllBGM();
   bgmHappy.play(); // Trả lại nhạc sôi động ở màn hình chọn
-  
-  const isAllCleared = questionStatuses.every(status => status === 'success');
+
+  const isAllCleared = questionStatuses.every((status) => status === "success");
   if (isAllCleared) {
-    selectionTitle.innerHTML = "🏆 HOÀN THÀNH TẤT CẢ CÂU HỎI!<br><span style='font-size:16px; color:#28a745; text-transform:none; display:block; margin-top:10px;'>Hãy click vào nút <b>🎉 Nổ hũ</b> góc dưới để nhận thông điệp cuối cùng!</span>";
+    selectionTitle.innerHTML =
+      "🏆 HOÀN THÀNH TẤT CẢ CÂU HỎI!<br><span style='font-size:16px; color:#28a745; text-transform:none; display:block; margin-top:10px;'>Hãy click vào nút <b>🎉 Nổ hũ</b> góc dưới để nhận thông điệp cuối cùng!</span>";
   } else {
     selectionTitle.textContent = "Chọn Câu Hỏi";
   }
@@ -175,7 +188,7 @@ function showSelectionScreen() {
   keywords.forEach((_, index) => {
     const btn = document.createElement("button");
     btn.className = "q-select-btn";
-    
+
     if (questionStatuses[index] === "success") {
       btn.classList.add("success");
       btn.textContent = `Câu hỏi ${index + 1} ✔️ (Chính xác)`;
@@ -185,7 +198,7 @@ function showSelectionScreen() {
     } else {
       btn.textContent = `Câu hỏi ${index + 1}`;
     }
-    
+
     btn.addEventListener("click", () => {
       sfxClick.currentTime = 0;
       sfxClick.play();
@@ -194,77 +207,87 @@ function showSelectionScreen() {
       currentKeywordIndex = index;
       startRound();
     });
-    
+
     questionButtonsGrid.appendChild(btn);
   });
 }
 
 // === XỬ LÝ GIAO DIỆN Ô CHỮ ===
 function generateMaskedPhrase() {
-  maskedPhraseDisplay.innerHTML = ""; 
+  maskedPhraseDisplay.innerHTML = "";
   let allRevealed = true;
-  
-  const words = currentKeyword.split(' ');
-  
-  words.forEach(word => {
-    const wordContainer = document.createElement('div');
-    wordContainer.className = 'word-container';
-    
-    const originalChars = word.split('');
-    const normChars = normalize(word).split('');
-    
+
+  const words = currentKeyword.split(" ");
+
+  words.forEach((word) => {
+    const wordContainer = document.createElement("div");
+    wordContainer.className = "word-container";
+
+    const originalChars = word.split("");
+    const normChars = normalize(word).split("");
+
     originalChars.forEach((char, i) => {
-      const span = document.createElement('span');
-      span.className = 'char-box';
-      span.textContent = char.toUpperCase(); 
-      
+      const span = document.createElement("span");
+      span.className = "char-box";
+      span.textContent = char.toUpperCase();
+
       const normChar = normChars[i];
       if (guessedLetters.has(normChar)) {
-        span.classList.add('revealed');
+        span.classList.add("revealed");
       } else {
-        span.classList.add('hidden-char'); 
+        span.classList.add("hidden-char");
         allRevealed = false;
       }
       wordContainer.appendChild(span);
     });
-    
+
     maskedPhraseDisplay.appendChild(wordContainer);
   });
-  
+
   return allRevealed;
 }
 
 // === LOGIC THẮNG CUỘC ===
 function handleWin() {
   clearInterval(timerInterval);
-  
+
+  // Dừng ngay nhạc đếm ngược kịch tính nếu đang phát dở
+  sfxTimeout.pause();
+  sfxTimeout.currentTime = 0;
+
   sfxCorrect.currentTime = 0;
   sfxCorrect.play();
 
   const normKeyword = normalize(currentKeyword);
-  for(let char of normKeyword) {
-    if(char !== ' ') guessedLetters.add(char);
+  for (let char of normKeyword) {
+    if (char !== " ") guessedLetters.add(char);
   }
-  generateMaskedPhrase(); 
-  
+  generateMaskedPhrase();
+
   hintDisplay.style.color = "#28a745";
-  hintDisplay.innerHTML = `🎉 <strong>Chính xác!</strong><br><span style="color:#1C3F60; font-size:18px; display:block; margin-top:10px;">Giải thích: ${hints[currentKeywordIndex]}</span>`;
-  
-  questionStatuses[currentKeywordIndex] = "success"; 
-  showActionButtons(false, true); 
+  hintDisplay.innerHTML = `
+  <div class="status-message success-status">🎉 <strong>Chính xác!</strong></div>
+  <div class="hint-text">Giải thích: ${hints[currentKeywordIndex]}</div>`;
+  questionStatuses[currentKeywordIndex] = "success";
+  showActionButtons(false, true);
 }
 
 // === ĐỒNG HỒ ĐẾM NGƯỢC ===
 function countdownTimer() {
   clearInterval(timerInterval);
-  timer = 45; 
+  timer = 45;
   timerDisplay.textContent = `Thời gian: ${timer}s`;
-  timerDisplay.style.color = "#D32F2F";
+  timerDisplay.style.color = "#0B3C46"; // Ban đầu để màu tối thanh lịch
 
   timerInterval = setInterval(() => {
     timer--;
     timerDisplay.textContent = `Thời gian: ${timer}s`;
-    
+    if (timer === 10) {
+      sfxTimeout.currentTime = 0;
+      sfxTimeout.play();
+      timerDisplay.style.color = "#D32F2F"; // Đổi màu đỏ cảnh báo kịch tính
+    }
+
     if (timer <= 0) {
       handleTimeout();
     }
@@ -285,57 +308,62 @@ function submitGuess() {
 
   if (normInput.length === 1) {
     if (guessedLetters.has(normInput)) {
-      hintDisplay.style.color = "#f0ad4e"; 
-      hintDisplay.innerHTML = `⚠️ Chữ <strong>"${rawInput.toUpperCase()}"</strong> đã có sẵn! Mời bạn đoán chữ khác.`;
-      guessInput.value = '';
+      hintDisplay.style.color = "#f0ad4e";
+      hintDisplay.innerHTML = `⚠️ Chữ "${rawInput.toUpperCase()}" đã có sẵn! Mời bạn đoán chữ khác.`;
+      guessInput.value = "";
       guessInput.focus();
       return;
     }
 
     if (normKeyword.includes(normInput)) {
       guessedLetters.add(normInput);
-      const isWin = generateMaskedPhrase(); 
+      const isWin = generateMaskedPhrase();
       if (isWin) {
         handleWin();
       } else {
         sfxCorrect.currentTime = 0;
         sfxCorrect.play();
         hintDisplay.style.color = "#28a745";
-        hintDisplay.innerHTML = `<strong>Chính xác có chữ "${rawInput.toUpperCase()}"!</strong> Mời đoán tiếp.`;
+        hintDisplay.innerHTML = `
+  <div class="status-message success-status"><strong>Chính xác có chữ "${rawInput.toUpperCase()}"!</strong></div>
+  <div class="hint-text">Mời đoán tiếp.</div>`;
       }
     } else {
       sfxWrong.currentTime = 0;
       sfxWrong.play();
       hintDisplay.style.color = "#D32F2F";
-      hintDisplay.innerHTML = `❌ <strong>Không có chữ "${rawInput.toUpperCase()}"! Gợi ý:</strong> ${hints[currentKeywordIndex]}`; 
+      hintDisplay.innerHTML = `
+  <div class="status-message error-status">❌ <strong>Không có chữ "${rawInput.toUpperCase()}"!</strong></div>
+  <div class="hint-text"><strong>Gợi ý:</strong> ${hints[currentKeywordIndex]}</div>`;
     }
-  } 
-  else {
+  } else {
     if (normInput === normKeyword) {
       handleWin();
     } else {
       sfxWrong.currentTime = 0;
       sfxWrong.play();
       hintDisplay.style.color = "#D32F2F";
-      hintDisplay.innerHTML = `❌ <strong>Sai rồi! Gợi ý:</strong> ${hints[currentKeywordIndex]}`; 
+      hintDisplay.innerHTML = `
+  <div class="status-message error-status">❌ <strong>Sai rồi!</strong></div>
+  <div class="hint-text"><strong>Gợi ý:</strong> ${hints[currentKeywordIndex]}</div>`;
     }
   }
-  
-  guessInput.value = '';
+
+  guessInput.value = "";
   guessInput.focus();
 }
 
 // === HẾT GIỜ ===
 function handleTimeout() {
   clearInterval(timerInterval);
-  sfxTimeout.currentTime = 0;
-  sfxTimeout.play();
+  // Không cần phát lại sfxTimeout ở đây nữa vì âm thanh phát từ giây 11 đã vừa vặn kết thúc lúc này
 
   hintDisplay.style.color = "#D32F2F";
-  hintDisplay.innerHTML = `⏱️ <strong>Hết giờ!</strong> Rất tiếc bạn chưa giải mã được cụm từ này. Hãy thử lại hoặc lựa chọn câu hỏi khác!`;
-  
-  questionStatuses[currentKeywordIndex] = "failed"; 
-  showActionButtons(true, true); 
+  hintDisplay.innerHTML = `
+  <div class="status-message error-status">⏱️ <strong>Hết giờ!</strong></div>
+  <div class="hint-text">Rất tiếc bạn chưa giải mã được cụm từ này. Hãy thử lại hoặc lựa chọn câu hỏi khác!</div>`;
+  questionStatuses[currentKeywordIndex] = "failed";
+  showActionButtons(true, true);
 }
 
 // Bật tắt các nút hành động cuối game
@@ -343,7 +371,7 @@ function showActionButtons(showRetry, showBack) {
   guessInput.disabled = true;
   submitGuessBtn.disabled = true;
   actionButtons.classList.remove("hidden");
-  
+
   retryBtn.style.display = showRetry ? "inline-block" : "none";
   backSelectBtn.style.display = showBack ? "inline-block" : "none";
 }
@@ -353,22 +381,27 @@ function startRound() {
   stopAllBGM();
   bgmJustCloud.play(); // Chuyển sang nhạc nền êm dịu khi tập trung
 
-  document.getElementById('round-indicator').textContent = `TỪ KHÓA ${currentKeywordIndex + 1}/5`;
+  // Đảm bảo tắt triệt để sfxTimeout cũ khi sang vòng mới hoặc chơi lại
+  sfxTimeout.pause();
+  sfxTimeout.currentTime = 0;
+
+  document.getElementById("round-indicator").textContent =
+    `TỪ KHÓA ${currentKeywordIndex + 1}/5`;
 
   currentKeyword = keywords[currentKeywordIndex];
   guessedLetters.clear();
-  
-  const words = currentKeyword.split(' ');
-  words.forEach(word => {
+
+  const words = currentKeyword.split(" ");
+  words.forEach((word) => {
     if (word.length > 0) guessedLetters.add(normalize(word[0]));
   });
 
   generateMaskedPhrase();
   countdownTimer();
-  
-  hintDisplay.textContent = 'Nhập 1 chữ cái hoặc cả cụm từ để giải mã!';
+
+  hintDisplay.textContent = "Nhập 1 chữ cái hoặc cả cụm từ để giải mã!";
   hintDisplay.style.color = "#1C3F60";
-  guessInput.value = '';
+  guessInput.value = "";
   guessInput.disabled = false;
   submitGuessBtn.disabled = false;
   actionButtons.classList.add("hidden");
