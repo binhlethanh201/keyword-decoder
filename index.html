@@ -2,7 +2,7 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <title>Game Vui Không Thưởng</title>
+    <title>Trò Chơi Lý Luận Triết Học</title>
     <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
   </head>
@@ -10,17 +10,18 @@
   <body>
     <div id="intro-screen">
       <div id="intro-overlay">
-        <div class="intro-badge">Mini Game Tổng Kết</div>
-        <h1>GIẢI MÃ TỪ KHÓA</h1>
+        <div class="intro-badge">Trò chơi</div>
+        <h1>GIẢI MÃ TỪ KHÓA </h1>
         <h2>Chủ đề: Dân chủ XHCN & Nhà nước pháp quyền</h2>
         
         <div class="game-rules">
-          <h3>📜 Luật chơi</h3>
+          <h3>📜 LUẬT CHƠI</h3>
           <ul>
-            <li>🎯 Có <strong>5 từ khóa</strong> cốt lõi cần giải mã.</li>
-            <li>⏱ Mỗi từ khóa có <strong>45 giây</strong> suy nghĩ.</li>
-            <li>🔤 Bạn có thể đoán <strong>1 chữ cái</strong> hoặc <strong>cả cụm từ</strong>.</li>
-            <li>💡 Mỗi lần đoán (đúng/sai) đều sẽ có <strong>gợi ý</strong> để giúp bạn.</li>
+            <li>🎯 Hệ thống bao gồm <strong>10 từ khóa bối cảnh</strong> cốt lõi cần lật mở.</li>
+            <li>🎪 Toàn bộ các ô chữ trống được <strong>ẩn giấu hoàn toàn</strong> (Phong cách Chiếc nón kỳ diệu).</li>
+            <li>💡 Mỗi từ khóa đều đi kèm <strong>Gợi ý bối cảnh thực tế</strong> xuất hiện ngay từ đầu để định hướng tư duy.</li>
+            <li>⏱ Thời gian suy nghĩ và đưa ra đáp án cho mỗi câu hỏi là <strong>45 giây</strong>.</li>
+            <li>🔤 Hình thức: Đoán từng <strong>chữ cái đơn lẻ</strong> hoặc lật mở <strong>toàn bộ cụm từ</strong>. Trả lời đúng sẽ kích hoạt "Chìa khóa kiến thức".</li>
           </ul>
         </div>
 
@@ -30,10 +31,12 @@
 
     <div id="selection-screen" class="hidden">
       <div class="selection-container">
-        <h2 id="selection-title" style="color: #0A192F; margin-bottom: 30px; font-size: 32px; text-transform: uppercase;">Chọn Câu Hỏi</h2>
+        <h2 id="selection-title" style="color: #0A192F; margin-bottom: 20px; font-size: 28px; text-transform: uppercase;">HỆ THỐNG TỪ KHÓA BÀI HỌC</h2>
+        
         <div id="question-buttons-grid">
           </div>
-          <button id="back-to-intro-btn" style="margin-top: 25px; background: none; border: none; font-size: 16px; color: #05829a; cursor: pointer; font-weight: bold; text-decoration: underline;">
+
+        <button id="back-to-intro-btn" style="margin-top: 25px; background: none; border: none; font-size: 16px; color: #05829a; cursor: pointer; font-weight: bold; text-decoration: underline;">
           ⬅️ Quay lại trang hướng dẫn
         </button>
       </div>
@@ -43,49 +46,26 @@
       <div id="game-container">
         <button id="abort-btn" style="position: absolute; top: 15px; left: 20px; background: none; border: none; font-size: 16px; color: #666; cursor: pointer; font-weight: bold;">⬅️ Trở về danh sách</button>
 
-        <div id="round-indicator" style="font-weight: 700; color: #1C3F60; font-size: 20px; margin-bottom: 30px; letter-spacing: 2px;">TỪ KHÓA 1/5</div>
-        <p id="timer">Thời gian: 60</p>
+        <div id="round-indicator" style="font-weight: 700; color: #1C3F60; font-size: 20px; margin-bottom: 25px; letter-spacing: 2px;">TỪ KHÓA 1/10</div>
+        <p id="timer">Thời gian: 45s</p>
+        
         <div id="masked-phrase"></div>
-        <input type="text" id="guess-input" placeholder="Nhập chữ cái hoặc cụm từ..." />
-        <button id="submit-guess-btn">Đoán</button>
+        
+        <div style="margin-bottom: 20px;">
+          <input type="text" id="guess-input" placeholder="Nhập chữ cái hoặc cụm từ..." />
+          <button id="submit-guess-btn">Đoán</button>
+        </div>
+
         <p id="hint-display"></p>
         
-        <div id="action-buttons" class="hidden" style="margin-top: 25px">
-          <button id="retry-btn" class="modal-btn" style="background: #f0ad4e; margin-right: 15px; color: #0a192f">
+        <div id="action-buttons" class="hidden">
+          <button id="retry-btn" class="action-btn">
             🔄 Thử lại câu này
           </button>
-          <button id="back-select-btn" class="modal-btn" style="background: #1C3F60; color: white;">
+          <button id="back-select-btn" class="action-btn">
             📋 Quay lại chọn câu
           </button>
         </div>
-      </div>
-    </div>
-
-    <div id="extra-buttons">
-      <button id="no-hu-btn">🎉 Nổ hũ</button>
-    </div>
-
-    <div id="nohu-modal" class="modal-overlay hidden">
-      <div class="modal-content nohu-content" style="text-align: center">
-        <span class="close-btn" onclick="closeNoHuModal()" style="position: absolute; top: 15px; right: 25px; font-size: 30px; cursor: pointer; color: #666;">×</span>
-
-        <h2 style="color: #d32f2f; margin-bottom: 10px">
-          🎉 GIẢI MÃ CÂU HỎI MỞ RỘNG 🎉
-        </h2>
-        <h1 style="color: #1c3f60; font-size: 42px; margin: 20px 0">
-          "Dân giàu, nước mạnh"
-        </h1>
-
-        <p class="meaning" style="font-size: 19px; line-height: 1.6; text-align: justify; padding: 0 15px;">
-          Ý nghĩa:
-          <strong>Sự giàu có của một quốc gia không đồng nghĩa với dân chủ hơn. Trong
-          chủ nghĩa tư bản, GDP có thể rất cao nhưng quyền lực vẫn thuộc về
-          thiểu số. Tại Việt Nam, "Dân giàu, nước mạnh" phải đi đôi với "Dân
-          chủ, công bằng, văn minh". Dân chủ XHCN chính là chìa khóa để sự
-          giàu có đó thuộc về đại đa số nhân dân chứ không phải một nhóm lợi ích!</strong>
-        </p>
-
-        <button class="modal-btn" onclick="closeNoHuModal()" style="background: #1c3f60; color: white;">Hoàn thành</button>
       </div>
     </div>
 

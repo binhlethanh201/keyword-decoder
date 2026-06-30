@@ -1,13 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
 
-/* QUAN TRỌNG: Class để ẩn phần tử */
+/* Class quản lý ẩn/hiện phần tử */
 .hidden {
   display: none !important;
 }
 
 body {
   font-family: 'Montserrat', sans-serif;
-  /* Thay đổi từ màu sáng tinh khôi sang hiệu ứng tỏa từ tối sang sáng (Radial Gradient) */
   background: radial-gradient(circle at center, #E0F2F5 0%, #22a1b9 60%, #05829a 100%);
   color: #0B3C46; 
   text-align: center;
@@ -18,15 +17,14 @@ body {
   min-height: 100vh;
 }
 
-h1 { font-size: 72px; font-weight: 700; color: #05829a; margin-bottom: 20px;}
-h2 { font-size: 36px; font-weight: 700; color: #05829a; }
-p, span, button, input { font-size: 21px; font-family: 'Montserrat', sans-serif; }
+h1 { font-size: 56px; font-weight: 700; color: #05829a; margin-bottom: 20px;}
+h2 { font-size: 32px; font-weight: 700; color: #05829a; }
+p, span, button, input { font-size: 20px; font-family: 'Montserrat', sans-serif; }
 
-/* === MÀN HÌNH INTRO: Sắc độ đậm đà, sang trọng nhất (Chuẩn màu #05829a) === */
+/* === MÀN HÌNH INTRO HƯỚNG DẪN === */
 #intro-screen {
   position: fixed;
   top: 0; left: 0; width: 100vw; height: 100vh;
-  /* Phối màu chuẩn #05829a chuyển mượt về tone tối để tạo chiều sâu bài thuyết trình */
   background: linear-gradient(135deg, #05829a 0%, #034e5c 100%); 
   display: flex;
   align-items: center;
@@ -37,12 +35,11 @@ p, span, button, input { font-size: 21px; font-family: 'Montserrat', sans-serif;
 #intro-overlay {
   text-align: center;
   color: white;
-  padding: 40px;
+  padding: 20px;
   width: 100%;
-  max-width: 800px;
+  max-width: 850px;
 }
 
-/* Badge (Nhãn nhỏ trên cùng) */
 .intro-badge {
   display: inline-block;
   background: #FFD700;
@@ -50,44 +47,43 @@ p, span, button, input { font-size: 21px; font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   padding: 8px 25px;
   border-radius: 50px;
-  font-size: 18px;
-  margin-bottom: 20px;
+  font-size: 16px;
+  margin-bottom: 15px;
   letter-spacing: 2px;
   text-transform: uppercase;
 }
 
 #intro-overlay h1 { 
   color: #FFFFFF; 
-  font-size: 64px;
-  text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  font-size: 48px;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.3);
   margin-bottom: 10px;
 }
 
 #intro-overlay h2 { 
   color: #B2DFE7; 
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 500;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
-/* Bảng Luật Chơi (Hiệu ứng kính mờ - Glassmorphism) */
 .game-rules {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  padding: 35px 50px;
+  padding: 25px 40px;
   border-radius: 20px;
   text-align: left;
-  margin: 0 auto 50px auto;
+  margin: 0 auto 35px auto;
   box-shadow: 0 15px 35px rgba(0,0,0,0.2);
 }
 
 .game-rules h3 {
   color: #FFD700;
   margin-top: 0;
-  font-size: 28px;
-  margin-bottom: 20px;
+  font-size: 24px;
+  margin-bottom: 15px;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -101,21 +97,20 @@ p, span, button, input { font-size: 21px; font-family: 'Montserrat', sans-serif;
 
 .game-rules li {
   color: #E2E8F0;
-  font-size: 20px;
-  margin-bottom: 18px;
-  line-height: 1.6;
+  font-size: 18px;
+  margin-bottom: 12px;
+  line-height: 1.5;
 }
 
 .game-rules li strong {
   color: #FFFFFF;
 }
 
-/* Nút Bắt đầu (Có hiệu ứng tỏa sáng Pulse) */
 #skip-button {
   background: #28a745; 
   color: white;
-  padding: 18px 50px;
-  font-size: 24px;
+  padding: 16px 45px;
+  font-size: 22px;
   border: none;
   border-radius: 50px;
   cursor: pointer;
@@ -132,11 +127,11 @@ p, span, button, input { font-size: 21px; font-family: 'Montserrat', sans-serif;
 
 @keyframes pulse {
   0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
-  70% { box-shadow: 0 0 0 20px rgba(40, 167, 69, 0); }
+  70% { box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); }
   100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
 }
 
-/* === KHU VỰC GAME CHÍNH (TRẢ LỜI CÂU HỎI) === */
+/* === KHU VỰC CHƠI GAME CHÍNH === */
 #main-layout {
   flex: 1;
   display: flex;
@@ -148,60 +143,57 @@ p, span, button, input { font-size: 21px; font-family: 'Montserrat', sans-serif;
 
 #game-container {
   width: 90%;
-  max-width: 900px;
-  background: rgba(255, 255, 255, 0.96); /* Trắng đục sang trọng nhẹ nhàng */
-  padding: 50px 40px;
+  max-width: 950px;
+  background: rgba(255, 255, 255, 0.96); 
+  padding: 40px 35px;
   border-radius: 24px;
-  /* Đổ bóng sâu để chiếc hộp nổi bật hoàn toàn trên nền gradient mới */
   box-shadow: 0 20px 50px rgba(3, 78, 92, 0.25); 
   border: 1px solid rgba(255, 255, 255, 0.7); 
-  margin-top: 20px;
+  margin-top: 10px;
   position: relative;
 }
 
 #timer {
   font-weight: 700;
   color: #D32F2F;
-  font-size: 30px;
-  margin-bottom: 20px;
+  font-size: 32px;
+  margin: 10px 0;
 }
 
-/* === CẤU TRÚC Ô CHỮ CỐ ĐỊNH CHỐNG NHẢY DÒNG === */
+/* CẤU TRÚC Ô CHỮ Ô TRỐNG KHÔNG NHẢY DÒNG */
 #masked-phrase {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px 35px; 
-  margin: 40px 0;
-  min-height: 60px;
+  gap: 15px 25px; 
+  margin: 30px 0;
+  min-height: 55px;
 }
 
 .word-container {
   display: flex;
-  gap: 8px; 
+  gap: 6px; 
   white-space: nowrap;
 }
 
 .char-box {
   display: inline-block;
-  width: 36px;       /* Cố định độ rộng để đổi chữ không bị co giãn ô */
-  height: 50px;      /* Cố định chiều cao */
-  line-height: 46px;
+  width: 34px;       
+  height: 48px;      
+  line-height: 44px;
   text-align: center;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   font-family: 'Montserrat', sans-serif;
   border-bottom: 4px solid #05829a; 
   transition: all 0.2s ease-in-out;
 }
 
-/* Khi chưa đoán trúng: Ẩn chữ bằng transparent và đổi gạch dưới sang xám */
 .char-box.hidden-char {
   color: transparent; 
   border-bottom: 4px solid #CBD5E1; 
 }
 
-/* Khi đoán trúng: Hiện màu xanh thương hiệu, đổi gạch dưới thành xanh lá */
 .char-box.revealed {
   color: #05829a;
   border-bottom: 4px solid #28a745;
@@ -214,12 +206,11 @@ p, span, button, input { font-size: 21px; font-family: 'Montserrat', sans-serif;
   100% { transform: scale(1); }
 }
 
-/* Khu vực Input đoán chữ */
 #guess-input {
-  padding: 15px 25px;
-  width: 60%;
+  padding: 12px 20px;
+  width: 50%;
   border: 2px solid #05829a;
-  border-radius: 10px;
+  border-radius: 8px;
   text-align: center;
   outline: none;
   transition: all 0.3s ease;
@@ -227,13 +218,13 @@ p, span, button, input { font-size: 21px; font-family: 'Montserrat', sans-serif;
 #guess-input:focus { border-color: #22a1b9; box-shadow: 0 0 15px rgba(5, 130, 154, 0.2); }
 
 #submit-guess-btn {
-  padding: 15px 40px;
+  padding: 12px 35px;
   background: #05829a;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  margin-left: 15px;
+  margin-left: 10px;
   font-weight: 700;
   transition: all 0.3s ease;
 }
@@ -243,103 +234,61 @@ p, span, button, input { font-size: 21px; font-family: 'Montserrat', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px; 
-  margin-top: 30px;
+  gap: 10px; 
+  margin-top: 20px;
 }
 
 .status-message {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
 }
 
-.success-status {
-  color: #28a745; 
-}
-
-.error-status {
-  color: #D32F2F; 
-}
+.success-status { color: #28a745; }
+.error-status { color: #D32F2F; }
 
 .hint-text {
-  font-size: 19px;
+  font-size: 18px;
   color: #1C3F60;
-  font-style: italic;
-  max-width: 90%;
+  max-width: 95%;
   line-height: 1.5;
   text-align: center;
 }
 
-/* === KHU VỰC CÁC NÚT ĐIỀU KHIỂN SAU KHI ĐOÁN (HÀNG ĐẦU/CUỐI) === */
+/* === KHU VỰC ĐIỀU KHIỂN GAME (NÚT CHỨC NĂNG) === */
 #action-buttons {
-  margin-top: 20px;
+  margin-top: 25px;
   display: flex;
   justify-content: center;
   gap: 15px;
 }
+
 .action-btn {
-  padding: 12px 25px;
+  padding: 14px 30px;
+  font-size: 18px;
   font-weight: 700;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
-}
-#retry-btn { background: #ffc107; color: #212529; }
-#back-select-btn { background: #17a2b8; color: white; }
-#abort-btn { background: #6c757d; color: white; margin-bottom: 15px; }
-.action-btn:hover { transform: translateY(-2px); opacity: 0.9; }
-
-/* === CÁC NÚT MỞ RỘNG (GÓC DƯỚI PHẢI) === */
-#extra-buttons {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-#extra-buttons button {
-  padding: 15px 30px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: all 0.3s ease;
-}
-#no-hu-btn { background: #FFD700; color: #034e5c; }
-#no-hu-btn:hover { background: #E0B500; transform: scale(1.05); }
-
-/* === MODAL / POPUP NỔ HŨ === */
-.modal-overlay {
-  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(3, 78, 92, 0.85);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 10000;
+  transition: all 0.2s ease;
 }
 
-.modal-content {
-  background: white;
-  padding: 40px;
-  border-radius: 15px;
-  max-width: 650px;
-  width: 90%;
-  position: relative;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+#retry-btn { 
+  background: #f0ad4e; 
+  color: #0a192f; 
 }
 
-.modal-btn {
-  margin-top: 25px;
-  padding: 12px 35px;
-  background: #05829a;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
+#back-select-btn { 
+  background: #1C3F60; 
+  color: white; 
 }
-.modal-btn:hover { background: #22a1b9; }
 
-/* === MÀN HÌNH CHỌN CÂU HỎI: Sắc độ vừa phải (Fade nhẹ giữa Intro và Main) === */
+.action-btn:hover { 
+  transform: translateY(-2px); 
+  opacity: 0.95; 
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+/* === MÀN HÌNH LƯỚI CHỌN CÂU HỎI (TỐI ƯU 2 CỘT GRID) === */
 #selection-screen {
   position: fixed;
   top: 0; left: 0; width: 100vw; height: 100vh;
@@ -352,32 +301,32 @@ p, span, button, input { font-size: 21px; font-family: 'Montserrat', sans-serif;
 
 .selection-container {
   background: rgba(255, 255, 255, 0.95);
-  padding: 40px 50px;
+  padding: 35px 45px;
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  max-width: 550px;
+  max-width: 750px; /* Tăng nhẹ chiều rộng để chia 2 cột đẹp hơn */
   width: 90%;
   text-align: center;
 }
 
+/* Biến đổi từ Flex-column sang Grid 2 cột song song */
 #question-buttons-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-top: 25px;
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  gap: 12px;
+  margin-top: 20px;
 }
 
-/* Base button danh sách câu hỏi */
 .q-select-btn {
-  padding: 16px 20px;
-  font-size: 19px;
+  padding: 14px 15px;
+  font-size: 17px;
   font-weight: 700;
   border: 2px solid #05829a;
   background: white;
   color: #05829a;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -387,29 +336,19 @@ p, span, button, input { font-size: 21px; font-family: 'Montserrat', sans-serif;
   transform: translateY(-2px);
 }
 
-/* Trạng thái câu trả lời ĐÚNG (Xanh lá cây) */
 .q-select-btn.success {
   background: #28a745;
   border-color: #28a745;
   color: white;
 }
-.q-select-btn.success:hover {
-  background: #218838;
-}
+.q-select-btn.success:hover { background: #218838; }
 
-/* Trạng thái câu trả lời SAI (Đỏ) */
 .q-select-btn.failed {
   background: #dc3545;
   border-color: #dc3545;
   color: white;
 }
-.q-select-btn.failed:hover {
-  background: #c82333;
-}
+.q-select-btn.failed:hover { background: #c82333; }
 
-#back-to-intro-btn {
-  transition: color 0.2s ease;
-}
-#back-to-intro-btn:hover {
-  color: #22a1b9 !important; 
-}
+#back-to-intro-btn { transition: color 0.2s ease; }
+#back-to-intro-btn:hover { color: #22a1b9 !important; }
