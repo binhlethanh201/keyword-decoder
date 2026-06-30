@@ -1,94 +1,94 @@
 <!doctype html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Game Vui Không Thưởng</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Game Giải Mã Cụm Từ</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
+  <body>
+    <div id="intro-screen">
+      <div id="intro-overlay">
+        <div class="intro-badge">Mini Game Tổng Kết</div>
+        <h1>GIẢI MÃ TỪ KHÓA</h1>
+        <h2>Chủ đề: Dân chủ XHCN & Nhà nước pháp quyền</h2>
+        
+        <div class="game-rules">
+          <h3>📜 Luật chơi</h3>
+          <ul>
+            <li>🎯 Có <strong>5 từ khóa</strong> cốt lõi cần giải mã.</li>
+            <li>⏱ Mỗi từ khóa có <strong>45 giây</strong> suy nghĩ.</li>
+            <li>🔤 Bạn có thể đoán <strong>1 chữ cái</strong> hoặc <strong>cả cụm từ</strong>.</li>
+            <li>💡 Mỗi lần đoán (đúng/sai) đều sẽ có <strong>gợi ý</strong> để giúp bạn.</li>
+          </ul>
+        </div>
 
-<body>
-  <!-- Âm thanh -->
-  <audio id="fail-sound" src="fail.mp3" preload="auto"></audio>
-  <audio id="nohu-sound" src="nohu.mp3" preload="auto" loop></audio>
-  <audio id="correct-sound" src="correct.mp3" preload="auto"></audio>
-  <audio id="fireworks-sound" src="fireworks.mp3" preload="auto" loop></audio>
-
-  <!-- MÀN HÌNH INTRO -->
-  <div id="intro-screen">
-    <video id="intro-video" autoplay muted loop playsinline>
-      <source src="intro.mp4" type="video/mp4">
-    </video>
-
-    <div id="intro-overlay">
-      <h1>Chào mừng đến với Game Giải Mã!</h1>
-      <h2>Nơi bạn thuộc về</h2>
-      <button id="unmute-button">🔊 Click me</button>
-      <button id="skip-button">Start game</button>
-    </div>
-  </div>
-
-  <!-- NỘI DUNG CHÍNH (ban đầu ẩn) -->
-  <div id="main-layout" class="hidden">
-    <div id="hangman-selection">
-      <h2>Chọn cụm từ để giải mã:</h2>
-      <!-- List 10 button sẽ được JS tạo -->
+        <button id="skip-button">🚀 BẮT ĐẦU NGAY</button>
+      </div>
     </div>
 
-    <div id="right-panel" class="hidden"> <!-- Giữ để tương lai nếu cần, nhưng hiện không dùng -->
+    <div id="selection-screen" class="hidden">
+      <div class="selection-container">
+        <h2 id="selection-title" style="color: #0A192F; margin-bottom: 30px; font-size: 32px; text-transform: uppercase;">Chọn Câu Hỏi</h2>
+        <div id="question-buttons-grid">
+          </div>
+          <button id="back-to-intro-btn" style="margin-top: 25px; background: none; border: none; font-size: 16px; color: #05829a; cursor: pointer; font-weight: bold; text-decoration: underline;">
+          ⬅️ Quay lại trang hướng dẫn
+        </button>
+      </div>
     </div>
-  </div>
 
-  <!-- 2 NÚT GÓC PHẢI -->
-  <div id="extra-buttons">
-    <button id="no-hu-btn">🎉 Nổ hũ</button>
-    <button id="giai-ma-btn">🔍 Giải mã</button>
-    <button id="giai-ma-dac-biet-btn">🔑 Giải mã đặc biệt</button>
-  </div>
+    <div id="main-layout" class="hidden">
+      <div id="game-container">
+        <button id="abort-btn" style="position: absolute; top: 15px; left: 20px; background: none; border: none; font-size: 16px; color: #666; cursor: pointer; font-weight: bold;">⬅️ Trở về danh sách</button>
 
-  <!-- MODAL GIẢI THÍCH -->
-  <div id="explain-modal" class="hidden">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">×</span>
-      <div id="explain-text"></div>
-      <button class="modal-btn" onclick="closeModal()">Tiếp tục</button>
+        <div id="round-indicator" style="font-weight: 700; color: #1C3F60; font-size: 20px; margin-bottom: 30px; letter-spacing: 2px;">TỪ KHÓA 1/5</div>
+        <p id="timer">Thời gian: 60</p>
+        <div id="masked-phrase"></div>
+        <input type="text" id="guess-input" placeholder="Nhập chữ cái hoặc cụm từ..." />
+        <button id="submit-guess-btn">Đoán</button>
+        <p id="hint-display"></p>
+        
+        <div id="action-buttons" class="hidden" style="margin-top: 25px">
+          <button id="retry-btn" class="modal-btn" style="background: #f0ad4e; margin-right: 15px; color: #0a192f">
+            🔄 Thử lại câu này
+          </button>
+          <button id="back-select-btn" class="modal-btn" style="background: #1C3F60; color: white;">
+            📋 Quay lại chọn câu
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- POPUP NỔ HŨ -->
-  <div id="nohu-modal" class="hidden">
-    <div class="modal-content nohu-content">
-      <h2>🎉 Chúc mừng các bạn 🎉</h2>
-      <h1>"Đồng tiền liền khúc ruột"</h1>
-      <p class="meaning">Ý nghĩa: <strong>Trong kinh tế, tiền tệ không chỉ là
-         giấy hay những con số vô tri, mà là hình thức biểu hiện của 
-         lao động xã hội kết tinh và của cải vật chất do con người tạo ra.
-          Vì thế, tiền chỉ thực sự có ý nghĩa khi nó phản ánh nền tảng 
-          sản xuất hiện thực — và không thể được tạo ra một cách tùy tiện hay 
-          vô hạn chỉ bằng ý chí hay mệnh lệnh.</strong></p>
-      <button class="modal-btn" onclick="closeNoHuModal()">Đóng</button>
+    <div id="extra-buttons">
+      <button id="no-hu-btn">🎉 Nổ hũ</button>
     </div>
-  </div>
 
-  <!-- POPUP GIẢI MÃ (HANGMAN) -->
-  <div id="giai-ma-modal" class="hidden">
-    <div class="modal-content giama-content">
-      <h2>🔍 Giải mã cụm từ</h2>
-      <div id="hangman-word"></div>
-      <input type="text" id="guess-letter" maxlength="1" placeholder="Nhập 1 chữ cái" />
-      <button onclick="guessLetter()">Đoán</button>
-      <p id="hangman-error" style="color: #d32f2f; font-weight: bold; margin-top: 15px; min-height: 24px;"></p>
-      <p id="wrong-letters" style="margin-top: 20px; font-size: 20px; color: #d32f2f;">
-        Danh sách các chữ đã đoán sai: <span id="wrong-list"></span>
-      </p>
-      <button class="nohu-in-giama" onclick="showNoHuFromGiaiMa()">🎉 Nổ hũ</button>
+    <div id="nohu-modal" class="modal-overlay hidden">
+      <div class="modal-content nohu-content" style="text-align: center">
+        <span class="close-btn" onclick="closeNoHuModal()" style="position: absolute; top: 15px; right: 25px; font-size: 30px; cursor: pointer; color: #666;">×</span>
+
+        <h2 style="color: #d32f2f; margin-bottom: 10px">
+          🎉 GIẢI MÃ CÂU HỎI MỞ RỘNG 🎉
+        </h2>
+        <h1 style="color: #1c3f60; font-size: 42px; margin: 20px 0">
+          "Dân giàu, nước mạnh"
+        </h1>
+
+        <p class="meaning" style="font-size: 19px; line-height: 1.6; text-align: justify; padding: 0 15px;">
+          Ý nghĩa:
+          <strong>Sự giàu có của một quốc gia không đồng nghĩa với dân chủ hơn. Trong
+          chủ nghĩa tư bản, GDP có thể rất cao nhưng quyền lực vẫn thuộc về
+          thiểu số. Tại Việt Nam, "Dân giàu, nước mạnh" phải đi đôi với "Dân
+          chủ, công bằng, văn minh". Dân chủ XHCN chính là chìa khóa để sự
+          giàu có đó thuộc về đại đa số nhân dân chứ không phải một nhóm lợi ích!</strong>
+        </p>
+
+        <button class="modal-btn" onclick="closeNoHuModal()" style="background: #1c3f60; color: white;">Hoàn thành</button>
+      </div>
     </div>
-  </div>
 
-  <!-- CANVAS PHÁO HOA -->
-  <canvas id="fireworks-canvas"></canvas>
-
-  <script src="script.js"></script>
-</body>
-
+    <script src="script.js"></script>
+  </body>
 </html>

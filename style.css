@@ -1,292 +1,393 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+
+/* QUAN TRỌNG: Class để ẩn phần tử */
+.hidden {
+  display: none !important;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background: url('background.jpg') no-repeat center center/cover; 
+  font-family: 'Montserrat', sans-serif;
+  /* Thay đổi từ màu sáng tinh khôi sang hiệu ứng tỏa từ tối sang sáng (Radial Gradient) */
+  background: radial-gradient(circle at center, #E0F2F5 0%, #22a1b9 60%, #05829a 100%);
+  color: #0B3C46; 
   text-align: center;
   margin: 0;
   padding: 0;
-}
-
-#main-layout {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  margin-top: 20px;
-  height: 80vh;
+  min-height: 100vh;
 }
 
-/* HANGMAN SELECTION */
-#hangman-selection {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  max-width: 400px;
-  width: 100%;
-}
+h1 { font-size: 72px; font-weight: 700; color: #05829a; margin-bottom: 20px;}
+h2 { font-size: 36px; font-weight: 700; color: #05829a; }
+p, span, button, input { font-size: 21px; font-family: 'Montserrat', sans-serif; }
 
-#hangman-selection h2 {
-  margin-bottom: 20px;
-}
-
-.hangman-btn {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0;
-  font-size: 18px;
-  background: #4169e1;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.hangman-btn:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.hangman-btn:hover:not(:disabled) {
-  background: #31519b;
-}
-
-/* === INTRO === */
+/* === MÀN HÌNH INTRO: Sắc độ đậm đà, sang trọng nhất (Chuẩn màu #05829a) === */
 #intro-screen {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: #000;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  /* Phối màu chuẩn #05829a chuyển mượt về tone tối để tạo chiều sâu bài thuyết trình */
+  background: linear-gradient(135deg, #05829a 0%, #034e5c 100%); 
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
 }
 
-#intro-video {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 #intro-overlay {
-  position: absolute;
-  bottom: 10px;                 
-  left:  50%;
-  transform: translateX(-50%);
   text-align: center;
   color: white;
-  z-index: 1;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 20px 40px;
-  border-radius: 12px;
-  max-width: 90%;
+  padding: 40px;
+  width: 100%;
+  max-width: 800px;
 }
 
-#intro-overlay h1 {
-  font-size: 36px;
+/* Badge (Nhãn nhỏ trên cùng) */
+.intro-badge {
+  display: inline-block;
+  background: #FFD700;
+  color: #034e5c;
+  font-weight: 700;
+  padding: 8px 25px;
+  border-radius: 50px;
+  font-size: 18px;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+#intro-overlay h1 { 
+  color: #FFFFFF; 
+  font-size: 64px;
+  text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  margin-bottom: 10px;
+}
+
+#intro-overlay h2 { 
+  color: #B2DFE7; 
+  font-size: 26px;
+  font-weight: 500;
+  margin-bottom: 40px;
+}
+
+/* Bảng Luật Chơi (Hiệu ứng kính mờ - Glassmorphism) */
+.game-rules {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 35px 50px;
+  border-radius: 20px;
+  text-align: left;
+  margin: 0 auto 50px auto;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.game-rules h3 {
+  color: #FFD700;
+  margin-top: 0;
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.game-rules ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.game-rules li {
+  color: #E2E8F0;
+  font-size: 20px;
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+
+.game-rules li strong {
+  color: #FFFFFF;
+}
+
+/* Nút Bắt đầu (Có hiệu ứng tỏa sáng Pulse) */
+#skip-button {
+  background: #28a745; 
+  color: white;
+  padding: 18px 50px;
+  font-size: 24px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 1px;
+  box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+  animation: pulse 2s infinite;
+  transition: transform 0.2s ease;
+}
+
+#skip-button:hover { 
+  transform: scale(1.05); 
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+  70% { box-shadow: 0 0 0 20px rgba(40, 167, 69, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+}
+
+/* === KHU VỰC GAME CHÍNH (TRẢ LỜI CÂU HỎI) === */
+#main-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+#game-container {
+  width: 90%;
+  max-width: 900px;
+  background: rgba(255, 255, 255, 0.96); /* Trắng đục sang trọng nhẹ nhàng */
+  padding: 50px 40px;
+  border-radius: 24px;
+  /* Đổ bóng sâu để chiếc hộp nổi bật hoàn toàn trên nền gradient mới */
+  box-shadow: 0 20px 50px rgba(3, 78, 92, 0.25); 
+  border: 1px solid rgba(255, 255, 255, 0.7); 
+  margin-top: 20px;
+  position: relative;
+}
+
+#timer {
+  font-weight: 700;
+  color: #D32F2F;
+  font-size: 30px;
   margin-bottom: 20px;
 }
 
-#unmute-button, #skip-button {
-  padding: 14px 32px;
-  font-size: 20px;
+/* === CẤU TRÚC Ô CHỮ CỐ ĐỊNH CHỐNG NHẢY DÒNG === */
+#masked-phrase {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px 35px; 
+  margin: 40px 0;
+  min-height: 60px;
+}
+
+.word-container {
+  display: flex;
+  gap: 8px; 
+  white-space: nowrap;
+}
+
+.char-box {
+  display: inline-block;
+  width: 36px;       /* Cố định độ rộng để đổi chữ không bị co giãn ô */
+  height: 50px;      /* Cố định chiều cao */
+  line-height: 46px;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  border-bottom: 4px solid #05829a; 
+  transition: all 0.2s ease-in-out;
+}
+
+/* Khi chưa đoán trúng: Ẩn chữ bằng transparent và đổi gạch dưới sang xám */
+.char-box.hidden-char {
+  color: transparent; 
+  border-bottom: 4px solid #CBD5E1; 
+}
+
+/* Khi đoán trúng: Hiện màu xanh thương hiệu, đổi gạch dưới thành xanh lá */
+.char-box.revealed {
+  color: #05829a;
+  border-bottom: 4px solid #28a745;
+  animation: popLetter 0.25s ease-out;
+}
+
+@keyframes popLetter {
+  0% { transform: scale(0.8); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Khu vực Input đoán chữ */
+#guess-input {
+  padding: 15px 25px;
+  width: 60%;
+  border: 2px solid #05829a;
+  border-radius: 10px;
+  text-align: center;
+  outline: none;
+  transition: all 0.3s ease;
+}
+#guess-input:focus { border-color: #22a1b9; box-shadow: 0 0 15px rgba(5, 130, 154, 0.2); }
+
+#submit-guess-btn {
+  padding: 15px 40px;
+  background: #05829a;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-left: 15px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+#submit-guess-btn:hover { background: #22a1b9; transform: translateY(-2px); }
+
+#hint-display {
+  margin-top: 35px;
+  min-height: 80px; 
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* === KHU VỰC CÁC NÚT ĐIỀU KHIỂN SAU KHI ĐOÁN (HÀNG ĐẦU/CUỐI) === */
+#action-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+.action-btn {
+  padding: 12px 25px;
+  font-weight: 700;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  margin: 10px;
+  transition: all 0.2s;
 }
+#retry-btn { background: #ffc107; color: #212529; }
+#back-select-btn { background: #17a2b8; color: white; }
+#abort-btn { background: #6c757d; color: white; margin-bottom: 15px; }
+.action-btn:hover { transform: translateY(-2px); opacity: 0.9; }
 
-#unmute-button {
-  background: #28a745;
-  color: white;
-}
-
-#unmute-button:hover { background: #218838; }
-
-#skip-button {
-  background: #35dc8e;
-  color: white;
-}
-
-#skip-button:hover { background: #35dc8e; }
-
-/* === MODAL === */
-#explain-modal {
+/* === CÁC NÚT MỞ RỘNG (GÓC DƯỚI PHẢI) === */
+#extra-buttons {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
+  bottom: 30px;
+  right: 30px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  gap: 15px;
+}
+#extra-buttons button {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+#no-hu-btn { background: #FFD700; color: #034e5c; }
+#no-hu-btn:hover { background: #E0B500; transform: scale(1.05); }
+
+/* === MODAL / POPUP NỔ HŨ === */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(3, 78, 92, 0.85);
+  display: flex; align-items: center; justify-content: center;
   z-index: 10000;
 }
 
 .modal-content {
-  background: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  text-align: center;
-  max-width: 500px;
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  max-width: 650px;
+  width: 90%;
   position: relative;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
-
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 36px;
-  cursor: pointer;
-  color: #aaa;
-}
-
-.close-btn:hover { color: #000; }
-
-#explain-text {
-  font-size: 24px;
-  line-height: 1.5;
-  margin-bottom: 25px;
-}
-
-#explain-text strong {
-  font-size: 28px;
-  color: #d32f2f;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
 .modal-btn {
-  padding: 12px 30px;
-  font-size: 18px;
-  background: #1976d2;
+  margin-top: 25px;
+  padding: 12px 35px;
+  background: #05829a;
   color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.modal-btn:hover { background: #1565c0; }
-
-/* NỔ HŨ & GIẢI MÃ */
-#nohu-modal,
-#giai-ma-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10002;
-  overflow: auto;
-}
-
-.nohu-content, .giama-content {
-  background: linear-gradient(135deg, #ffd700, #ff8c00);
-  color: #000;
-  animation: sparkle 2s infinite;
-  max-width: 90vw;              /* Tăng lên 90% viewport width */
-  width: 600px;                 /* Chiều rộng cố định lớn hơn (hoặc giữ 500px nếu thích) */
-  min-width: 320px;
-  padding: 30px 20px;           /* Giảm padding ngang để tiết kiệm không gian */
-  border-radius: 16px;
-  box-sizing: border-box;       /* Đảm bảo padding không làm tăng width */
-  overflow: hidden;
-}
-@keyframes sparkle {
-  0% { box-shadow: 0 0 20px gold; }
-  50% { box-shadow: 0 0 40px orange; }
-  100% { box-shadow: 0 0 20px gold; }
-}
-/* Responsive cho màn hình nhỏ */
-@media (max-width: 600px) {
-  #hangman-word {
-    font-size: 22px;            /* Nhỏ hơn nữa trên mobile */
-    letter-spacing: 4px;
-  }
-  
-  .modal-content.giama-content {
-    max-width: 95vw;
-    padding: 20px 15px;
-  }
-}
-.meaning strong {
-  font-size: 22px;
-  color: #d32f2f;
-}
-
-/* HANGMAN */
-#hangman-word {
-  font-size: 36px;
-  letter-spacing: 10px;  /* Giữ để cách các chữ cái */
-  white-space: pre-wrap;        /* Cho phép wrap tự động khi quá dài */
-  word-break: break-all;        /* Phá vỡ từ nếu cần (nhưng ưu tiên pre-wrap) */
-  line-height: 1.4;             /* Tăng khoảng cách dòng nếu wrap */
-  margin: 30px 0;               
-  padding: 0 10px;              /* Padding nhỏ hai bên */
-  text-align: center;
-  overflow-wrap: break-word;    /* Hỗ trợ wrap tốt hơn trên mobile */
-  max-width: 100%;
-}
-#giai-ma-modal input {
-  font-size: 24px;
-  width: 60px;
-  text-align: center;
-  text-transform: uppercase;
-}
-.nohu-in-giama {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background: #ff4444;
-  color: white;
-  border: none;
-  border-radius: 6px;
-}
-
-/* 2 NÚT GÓC PHẢI */
-#extra-buttons {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  text-align: right;
-}
-#extra-buttons button {
-  padding: 12px 24px;
-  font-size: 18px;
-  margin: 10px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-}
-#no-hu-btn { background: #ffd700; }
-#giai-ma-btn { background: #4169e1; color: white; }
-#giai-ma-dac-biet-btn {
-  background: #ff4500; /* màu cam đỏ nổi bật */
-  color: white;
-}
-
-/* PHÁO HOA CANVAS */
-#fireworks-canvas {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 9998;
-  opacity: 0;
-  transition: opacity 1s;
-}
-
-#wrong-letters {
   font-weight: bold;
 }
+.modal-btn:hover { background: #22a1b9; }
 
-#wrong-list {
-  letter-spacing: 8px;
+/* === MÀN HÌNH CHỌN CÂU HỎI: Sắc độ vừa phải (Fade nhẹ giữa Intro và Main) === */
+#selection-screen {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: linear-gradient(135deg, #22a1b9 0%, #05829a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.selection-container {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px 50px;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  max-width: 550px;
+  width: 90%;
+  text-align: center;
+}
+
+#question-buttons-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+/* Base button danh sách câu hỏi */
+.q-select-btn {
+  padding: 16px 20px;
+  font-size: 19px;
+  font-weight: 700;
+  border: 2px solid #05829a;
+  background: white;
+  color: #05829a;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.q-select-btn:hover {
+  background: #05829a;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Trạng thái câu trả lời ĐÚNG (Xanh lá cây) */
+.q-select-btn.success {
+  background: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+.q-select-btn.success:hover {
+  background: #218838;
+}
+
+/* Trạng thái câu trả lời SAI (Đỏ) */
+.q-select-btn.failed {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+.q-select-btn.failed:hover {
+  background: #c82333;
+}
+
+#back-to-intro-btn {
+  transition: color 0.2s ease;
+}
+#back-to-intro-btn:hover {
+  color: #22a1b9 !important; 
 }

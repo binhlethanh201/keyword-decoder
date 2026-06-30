@@ -1,346 +1,376 @@
-const tickSound = document.getElementById("tick-sound");
-const nohuSound = document.getElementById("nohu-sound");
-const correctSound = document.getElementById("correct-sound");
-const fireworksSound = document.getElementById("fireworks-sound");
+// === HỆ THỐNG ÂM THANH & NHẠC NỀN ===
+const sfxClick = new Audio('sounds/popClick.mp3');
+const sfxCorrect = new Audio('sounds/correct.mp3');
+const sfxWrong = new Audio('sounds/wrong.mp3');
+const sfxTimeout = new Audio('sounds/timeout.mp3');
+// Lưu ý: Tên file lấy theo đúng cấu trúc ảnh chụp là jackport.mp3
+const sfxJackpot = new Audio('sounds/jackport.mp3'); 
 
-// Hàm chuẩn hóa (bỏ dấu)
-function normalize(str) {
-  if (!str) return "";
-  return str.toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/đ/g, "d")
-    .replace(/Đ/g, "D")
-    .trim();
+// Khai báo 2 bài nhạc nền BGM
+const bgmHappy = new Audio('sounds/Happy(Instrumental).mp3');
+const bgmJustCloud = new Audio('sounds/JustACloudAway(Instrumental).mp3');
+
+// Cấu hình lặp lại cho nhạc nền
+bgmHappy.loop = true;
+bgmJustCloud.loop = true;
+
+// Cài đặt âm lượng phù hợp (Tránh bị quá to trên loa lớp học)
+sfxClick.volume = 0.4;
+sfxCorrect.volume = 0.6;
+sfxWrong.volume = 0.5;
+sfxTimeout.volume = 0.6;
+sfxJackpot.volume = 0.7;
+bgmHappy.volume = 0.2;       
+bgmJustCloud.volume = 0.18;   
+
+// Hàm tiện ích để tắt toàn bộ BGM trước khi chuyển bài
+function stopAllBGM() {
+  bgmHappy.pause();
+  bgmHappy.currentTime = 0;
+  bgmJustCloud.pause();
+  bgmJustCloud.currentTime = 0;
 }
 
-const emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
+// === CÁC PHẦN TỬ DOM ===
+const introScreen = document.getElementById("intro-screen");
+const selectionScreen = document.getElementById("selection-screen");
+const mainLayout = document.getElementById("main-layout");
+const skipButton = document.getElementById("skip-button");
+const backToIntroBtn = document.getElementById("back-to-intro-btn");
 
-// Âm thanh
-const beepSound = document.getElementById("beep-sound");
-const failSound = document.getElementById("fail-sound");
+const timerDisplay = document.getElementById('timer');
+const maskedPhraseDisplay = document.getElementById('masked-phrase');
+const guessInput = document.getElementById('guess-input');
+const submitGuessBtn = document.getElementById('submit-guess-btn');
+const hintDisplay = document.getElementById('hint-display');
 
-// 10 cụm từ cho Hangman 
-const secrets = [
-  { original: "Lao động trừu tượng", normalized: normalize("Lao động trừu tượng"), explain: "Lao động của con người xét ở mặt tạo ra giá trị, không phụ thuộc vào nghề cụ thể." },
-  { original: "Bản vị vàng", normalized: normalize("Bản vị vàng"), explain: "Hệ thống tiền tệ trong đó tiền giấy có thể quy đổi ra vàng theo tỷ lệ cố định." },
-  { original: "Kỷ luật thép", normalized: normalize("Kỷ luật thép"), explain: "Sự ràng buộc chặt chẽ của bản vị vàng khiến chính phủ không thể tùy tiện in tiền." },
-  { original: "Bản vị dầu", normalized: normalize("Bản vị dầu"), explain: "Hệ thống trong đó dầu mỏ được định giá bằng một đồng tiền chủ chốt, tạo nhu cầu toàn cầu cho đồng tiền đó." },
-  { original: "Vật ngang giá", normalized: normalize("Vật ngang giá"), explain: "Hàng hóa được dùng để biểu hiện giá trị của các hàng hóa khác và trở thành cơ sở của tiền tệ." },
-  { original: "Tái sản xuất mở rộng", normalized: normalize("Tái sản xuất mở rộng"), explain: "Quá trình sản xuất không chỉ lặp lại mà còn mở rộng quy mô để tạo ra nhiều giá trị hơn." },
-  { original: "Giá trị thặng dư", normalized: normalize("Giá trị thặng dư"), explain: "Phần giá trị người lao động tạo ra vượt quá tiền lương họ nhận được." },
-  { original: "Tiền tệ thế giới", normalized: normalize("Tiền tệ thế giới"), explain: "Tiền dùng trong thanh toán và giao dịch quốc tế giữa các quốc gia." },
-  { original: "Hình thái tiền tệ", normalized: normalize("Hình thái tiền tệ"), explain: "Giai đoạn phát triển cao nhất khi một hàng hóa được cố định làm vật ngang giá chung." },
-  { original: "Khủng hoảng chu kỳ", normalized: normalize("Khủng hoảng chu kỳ"), explain: "Hiện tượng suy thoái kinh tế lặp lại theo chu kỳ trong chủ nghĩa tư bản." }
+const actionButtons = document.getElementById('action-buttons');
+const retryBtn = document.getElementById('retry-btn');
+const backSelectBtn = document.getElementById('back-select-btn');
+const abortBtn = document.getElementById('abort-btn');
+const questionButtonsGrid = document.getElementById('question-buttons-grid');
+const selectionTitle = document.getElementById('selection-title');
+
+const nohuModal = document.getElementById("nohu-modal");
+
+// === DỮ LIỆU GAME ===
+const keywords = [
+  "Quyền làm chủ",
+  "Nhà nước pháp quyền",
+  "Dân biết dân bàn",
+  "Chế độ công hữu",
+  "Bình đẳng xã hội"
 ];
 
-// Từ đặc biệt cho Hangman đặc biệt
-const specialSecret = {
-  original: "Đồng tiền liền khúc ruột",
-  normalized: normalize("Đồng tiền liền khúc ruột")
-};
+const hints = [
+  "Bản chất cốt lõi của nền dân chủ XHCN, khẳng định ai là người nắm quyền lực cao nhất.",
+  "Công cụ quản lý xã hội hiện đại, nơi mọi hành vi đều phải tuân thủ khuôn khổ của pháp luật.",
+  "Phương châm thực hành dân chủ trực tiếp tại cơ sở.",
+  "Nền tảng kinh tế để bảo đảm dân chủ XHCN là dân chủ cho đa số, không bị túi tiền chi phối.",
+  "Mục tiêu hướng tới sự công bằng, không áp bức bóc lột trong xã hội XHCN."
+];
 
-// Modal
-const explainModal = document.getElementById("explain-modal");
-const explainText = document.getElementById("explain-text");
-const nohuModal = document.getElementById("nohu-modal");
-const giamaModal = document.getElementById("giai-ma-modal");
-const hangmanWord = document.getElementById("hangman-word");
-const guessInput = document.getElementById("guess-letter");
-const hangmanError = document.getElementById("hangman-error");
-const wrongLettersList = document.getElementById("wrong-list");
+// === TRẠNG THÁI GAME ===
+let currentKeywordIndex = 0;
+let currentKeyword = '';
+let timer = 45;
+let timerInterval = null;
+let guessedLetters = new Set(); 
+let questionStatuses = ["idle", "idle", "idle", "idle", "idle"];
 
-// Pháo hoa canvas
-const fireworksCanvas = document.getElementById("fireworks-canvas");
-const ctx = fireworksCanvas.getContext("2d");
-fireworksCanvas.width = window.innerWidth;
-fireworksCanvas.height = window.innerHeight;
+// === KHỞI TẠO GAME & SỰ KIỆN ===
+document.addEventListener("DOMContentLoaded", () => {
+  mainLayout.classList.add("hidden");
+  selectionScreen.classList.add("hidden");
+  nohuModal.classList.add("hidden");
 
-// Hangman state
-let currentIndex = null;
-let secretWordOriginal = "";
-let secretWordNormalized = "";
-let revealed = [];
-let guessedLetters = new Set();
-let wrongLetters = new Set();
-let openedCount = 0;
-let fireworksStarted = false;
-let completed = new Set(); // Track các index đã hoàn thành
-let isSpecial = false;
-
-function closeModal() {
-  explainModal.classList.add("hidden");
-  explainModal.style.display = "none";
-  correctSound.pause();
-  correctSound.currentTime = 0;
-  if (openedCount === 10 && !fireworksStarted) {
-    fireworksStarted = true;
-    startFireworks();
-  }
-}
-
-// Tạo list 10 button cho hangman selection
-const hangmanSelection = document.getElementById("hangman-selection");
-secrets.forEach((_, i) => {
-  const btn = document.createElement("button");
-  btn.textContent = `${emojis[i]} Cụm từ ${i + 1}`;
-  btn.dataset.index = i;
-  btn.classList.add("hangman-btn");
-  btn.addEventListener("click", () => {
-    if (!completed.has(i)) {
-      startHangman(i);
+  // Bật nhạc nền trang chủ khi người dùng tương tác (Browser policy)
+  document.body.addEventListener('click', () => {
+    if (bgmHappy.paused && introScreen.classList.contains("hidden") === false) {
+        bgmHappy.play().catch(e => console.log("Audio autoplay blocked", e));
     }
+  }, { once: true });
+
+  // Từ Intro -> Màn chọn câu hỏi
+  skipButton.addEventListener("click", () => {
+    sfxClick.currentTime = 0;
+    sfxClick.play();
+    introScreen.classList.add("hidden");
+    showSelectionScreen();
   });
-  hangmanSelection.appendChild(btn);
+
+  // Màn chọn câu hỏi -> Quay về Intro
+  backToIntroBtn.addEventListener("click", () => {
+    sfxClick.currentTime = 0;
+    sfxClick.play();
+    selectionScreen.classList.add("hidden");
+    introScreen.classList.remove("hidden");
+    
+    stopAllBGM();
+    bgmHappy.play();
+  });
+
+  submitGuessBtn.addEventListener("click", submitGuess);
+  guessInput.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") submitGuess();
+  });
+
+  // Các nút điều khiển trong màn chơi
+  retryBtn.addEventListener("click", () => {
+    sfxClick.currentTime = 0;
+    sfxClick.play();
+    startRound();
+  }); 
+  
+  backSelectBtn.addEventListener("click", goBackToSelection);
+  abortBtn.addEventListener("click", goBackToSelection);
+
+  // Nút Nổ hũ
+  document.getElementById("no-hu-btn").addEventListener("click", () => {
+    sfxJackpot.currentTime = 0;
+    sfxJackpot.play();
+    bgmJustCloud.volume = 0.05; // Giảm nhạc nền
+    nohuModal.classList.remove("hidden");
+  });
 });
 
-function startHangman(index, special = false) {
-  currentIndex = index;
-  isSpecial = special;
-  if (special) {
-    secretWordOriginal = specialSecret.original;
-    secretWordNormalized = specialSecret.normalized;
-    document.querySelector("#giai-ma-modal h2").textContent = "🔑 Giải mã cụm từ đặc biệt";
+function goBackToSelection() {
+  sfxClick.currentTime = 0;
+  sfxClick.play();
+  clearInterval(timerInterval);
+  sfxTimeout.pause();
+  sfxTimeout.currentTime = 0;
+  showSelectionScreen();
+}
+
+// Loại bỏ dấu tiếng Việt
+function normalize(str) {
+  return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").trim();
+}
+
+function closeNoHuModal() {
+  sfxClick.currentTime = 0;
+  sfxClick.play();
+  bgmJustCloud.volume = 0.18; // Khôi phục nhạc nền
+  nohuModal.classList.add("hidden");
+}
+
+// === HIỂN THỊ MENU CHỌN CÂU HỎI ===
+function showSelectionScreen() {
+  clearInterval(timerInterval);
+  mainLayout.classList.add("hidden");
+  selectionScreen.classList.remove("hidden");
+  
+  stopAllBGM();
+  bgmHappy.play(); // Trả lại nhạc sôi động ở màn hình chọn
+  
+  const isAllCleared = questionStatuses.every(status => status === 'success');
+  if (isAllCleared) {
+    selectionTitle.innerHTML = "🏆 HOÀN THÀNH TẤT CẢ CÂU HỎI!<br><span style='font-size:16px; color:#28a745; text-transform:none; display:block; margin-top:10px;'>Hãy click vào nút <b>🎉 Nổ hũ</b> góc dưới để nhận thông điệp cuối cùng!</span>";
   } else {
-    secretWordOriginal = secrets[index].original;
-    secretWordNormalized = secrets[index].normalized;
-    document.querySelector("#giai-ma-modal h2").textContent = "🔍 Giải mã cụm từ";
+    selectionTitle.textContent = "Chọn Câu Hỏi";
   }
-  revealed = Array(secretWordOriginal.length).fill('_');
 
-  // Tự động reveal khoảng trắng
-  for (let i = 0; i < secretWordOriginal.length; i++) {
-    if (secretWordOriginal[i] === ' ') {
-      revealed[i] = ' ';
+  questionButtonsGrid.innerHTML = "";
+  keywords.forEach((_, index) => {
+    const btn = document.createElement("button");
+    btn.className = "q-select-btn";
+    
+    if (questionStatuses[index] === "success") {
+      btn.classList.add("success");
+      btn.textContent = `Câu hỏi ${index + 1} ✔️ (Chính xác)`;
+    } else if (questionStatuses[index] === "failed") {
+      btn.classList.add("failed");
+      btn.textContent = `Câu hỏi ${index + 1} ❌ (Chưa đúng)`;
+    } else {
+      btn.textContent = `Câu hỏi ${index + 1}`;
     }
+    
+    btn.addEventListener("click", () => {
+      sfxClick.currentTime = 0;
+      sfxClick.play();
+      selectionScreen.classList.add("hidden");
+      mainLayout.classList.remove("hidden");
+      currentKeywordIndex = index;
+      startRound();
+    });
+    
+    questionButtonsGrid.appendChild(btn);
+  });
+}
+
+// === XỬ LÝ GIAO DIỆN Ô CHỮ ===
+function generateMaskedPhrase() {
+  maskedPhraseDisplay.innerHTML = ""; 
+  let allRevealed = true;
+  
+  const words = currentKeyword.split(' ');
+  
+  words.forEach(word => {
+    const wordContainer = document.createElement('div');
+    wordContainer.className = 'word-container';
+    
+    const originalChars = word.split('');
+    const normChars = normalize(word).split('');
+    
+    originalChars.forEach((char, i) => {
+      const span = document.createElement('span');
+      span.className = 'char-box';
+      span.textContent = char.toUpperCase(); 
+      
+      const normChar = normChars[i];
+      if (guessedLetters.has(normChar)) {
+        span.classList.add('revealed');
+      } else {
+        span.classList.add('hidden-char'); 
+        allRevealed = false;
+      }
+      wordContainer.appendChild(span);
+    });
+    
+    maskedPhraseDisplay.appendChild(wordContainer);
+  });
+  
+  return allRevealed;
+}
+
+// === LOGIC THẮNG CUỘC ===
+function handleWin() {
+  clearInterval(timerInterval);
+  
+  sfxCorrect.currentTime = 0;
+  sfxCorrect.play();
+
+  const normKeyword = normalize(currentKeyword);
+  for(let char of normKeyword) {
+    if(char !== ' ') guessedLetters.add(char);
   }
-
-  guessedLetters.clear();
-  wrongLetters.clear();
-  updateHangmanDisplay();
-  wrongLettersList.textContent = "";
-  giamaModal.classList.remove("hidden");
-  giamaModal.style.display = "flex";
-  guessInput.value = "";
-  guessInput.focus();
+  generateMaskedPhrase(); 
+  
+  hintDisplay.style.color = "#28a745";
+  hintDisplay.innerHTML = `🎉 <strong>Chính xác!</strong><br><span style="color:#1C3F60; font-size:18px; display:block; margin-top:10px;">Giải thích: ${hints[currentKeywordIndex]}</span>`;
+  
+  questionStatuses[currentKeywordIndex] = "success"; 
+  showActionButtons(false, true); 
 }
 
-function updateHangmanDisplay() {
-  hangmanWord.textContent = revealed.join('');  // Thay join(' ') thành join('') để space tự nhiên, không double
+// === ĐỒNG HỒ ĐẾM NGƯỢC ===
+function countdownTimer() {
+  clearInterval(timerInterval);
+  timer = 45; 
+  timerDisplay.textContent = `Thời gian: ${timer}s`;
+  timerDisplay.style.color = "#D32F2F";
+
+  timerInterval = setInterval(() => {
+    timer--;
+    timerDisplay.textContent = `Thời gian: ${timer}s`;
+    
+    if (timer <= 0) {
+      handleTimeout();
+    }
+  }, 1000);
 }
 
-function guessLetter() {
-  const letter = normalize(guessInput.value).toUpperCase();
-  if (!letter || guessedLetters.has(letter)) {
-    guessInput.value = "";
+// === XỬ LÝ NGƯỜI CHƠI ĐOÁN ===
+function submitGuess() {
+  const rawInput = guessInput.value.trim();
+  if (!rawInput) {
+    hintDisplay.style.color = "#D32F2F";
+    hintDisplay.textContent = "Vui lòng nhập 1 chữ cái hoặc cả cụm từ!";
     return;
   }
 
-  guessedLetters.add(letter);
-  let correct = false;
+  const normInput = normalize(rawInput);
+  const normKeyword = normalize(currentKeyword);
 
-  for (let i = 0; i < secretWordOriginal.length; i++) {
-    if (normalize(secretWordOriginal[i]).toUpperCase() === letter) {
-      revealed[i] = secretWordOriginal[i];
-      correct = true;
+  if (normInput.length === 1) {
+    if (guessedLetters.has(normInput)) {
+      hintDisplay.style.color = "#f0ad4e"; 
+      hintDisplay.innerHTML = `⚠️ Chữ <strong>"${rawInput.toUpperCase()}"</strong> đã có sẵn! Mời bạn đoán chữ khác.`;
+      guessInput.value = '';
+      guessInput.focus();
+      return;
     }
-  }
 
-  updateHangmanDisplay();
-  guessInput.value = "";
-  guessInput.focus();
-
-  if (!correct) {
-    wrongLetters.add(letter);
-    wrongLettersList.textContent = Array.from(wrongLetters).join("  ");
-    hangmanError.textContent = "Không có chữ này!";
-    failSound.play();
-    setTimeout(() => {
-      hangmanError.textContent = "";
-    }, 2000);
-  } else if (revealed.join('') === secretWordOriginal) {
-    if (isSpecial) {
-      // Đặc biệt: Tự mở Nổ hũ ngay khi đoán đúng
-      setTimeout(() => {
-        giamaModal.classList.add("hidden");
-        giamaModal.style.display = "none";
-        nohuModal.classList.remove("hidden");
-        nohuModal.style.display = "flex";
-        playNoHuSound();
-      }, 500);
-    } else {
-      completed.add(currentIndex);
-      document.querySelector(`button[data-index="${currentIndex}"]`).disabled = true;
-      document.querySelector(`button[data-index="${currentIndex}"]`).textContent = `${emojis[currentIndex]} Đã giải mã: ${secretWordOriginal}`;
-      setTimeout(() => {
-        giamaModal.classList.add("hidden");
-        giamaModal.style.display = "none";
-        explainText.innerHTML = `${emojis[currentIndex]} <strong>${secretWordOriginal}</strong><br><br>→ ${secrets[currentIndex].explain}`;
-        explainModal.classList.remove("hidden");
-        explainModal.style.display = "flex";
-        playCorrectSound();
-        openedCount++;
-      }, 500);
-    }
-  }
-}
-
-// Pháo hoa (giữ nguyên, nhưng thêm mở nohu sau fade)
-function startFireworks() {
-  fireworksCanvas.style.opacity = 1;
-  playFireworksSound();
-  let particles = [];
-  let animationId = null;
-  let startTime = Date.now();
-  const duration = 12000;
-
-  function createParticle() {
-    return {
-      x: Math.random() * fireworksCanvas.width,
-      y: fireworksCanvas.height,
-      vx: Math.random() * 6 - 3,
-      vy: Math.random() * -12 - 8,
-      color: `hsl(${Math.random() * 360},100%,50%)`,
-      radius: Math.random() * 3 + 2,
-      life: 100
-    };
-  }
-
-  function animate() {
-    ctx.fillStyle = "rgba(0,0,0,0.15)";
-    ctx.fillRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
-
-    for (let i = 0; i < 6; i++) particles.push(createParticle());
-
-    particles = particles.filter(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += 0.25;
-      p.life -= 1.5;
-
-      if (p.life > 0) {
-        ctx.globalAlpha = p.life / 100;
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-        return true;
+    if (normKeyword.includes(normInput)) {
+      guessedLetters.add(normInput);
+      const isWin = generateMaskedPhrase(); 
+      if (isWin) {
+        handleWin();
+      } else {
+        sfxCorrect.currentTime = 0;
+        sfxCorrect.play();
+        hintDisplay.style.color = "#28a745";
+        hintDisplay.innerHTML = `<strong>Chính xác có chữ "${rawInput.toUpperCase()}"!</strong> Mời đoán tiếp.`;
       }
-      return false;
-    });
-
-    if (Date.now() - startTime < duration) {
-      animationId = requestAnimationFrame(animate);
     } else {
-      cancelAnimationFrame(animationId);
-      let fadeOpacity = 1;
-      const fadeInterval = setInterval(() => {
-        fadeOpacity -= 0.05;
-        fireworksCanvas.style.opacity = fadeOpacity;
-        if (fadeOpacity <= 0) {
-          clearInterval(fadeInterval);
-          fireworksCanvas.style.opacity = 0;
-          stopFireworksSound();
-          particles = [];
-        }
-      }, 50);
+      sfxWrong.currentTime = 0;
+      sfxWrong.play();
+      hintDisplay.style.color = "#D32F2F";
+      hintDisplay.innerHTML = `❌ <strong>Không có chữ "${rawInput.toUpperCase()}"! Gợi ý:</strong> ${hints[currentKeywordIndex]}`; 
+    }
+  } 
+  else {
+    if (normInput === normKeyword) {
+      handleWin();
+    } else {
+      sfxWrong.currentTime = 0;
+      sfxWrong.play();
+      hintDisplay.style.color = "#D32F2F";
+      hintDisplay.innerHTML = `❌ <strong>Sai rồi! Gợi ý:</strong> ${hints[currentKeywordIndex]}`; 
     }
   }
-
-  animate();
+  
+  guessInput.value = '';
+  guessInput.focus();
 }
 
-// Nổ hũ
-document.getElementById("no-hu-btn").addEventListener("click", () => {
-  nohuModal.classList.remove("hidden");
-  nohuModal.style.display = "flex";
-  playNoHuSound();
-});
+// === HẾT GIỜ ===
+function handleTimeout() {
+  clearInterval(timerInterval);
+  sfxTimeout.currentTime = 0;
+  sfxTimeout.play();
 
-function closeNoHuModal() {
-  nohuModal.classList.add("hidden");
-  nohuModal.style.display = "none";
-  nohuSound.pause();
-  nohuSound.currentTime = 0;
+  hintDisplay.style.color = "#D32F2F";
+  hintDisplay.innerHTML = `⏱️ <strong>Hết giờ!</strong> Rất tiếc bạn chưa giải mã được cụm từ này. Hãy thử lại hoặc lựa chọn câu hỏi khác!`;
+  
+  questionStatuses[currentKeywordIndex] = "failed"; 
+  showActionButtons(true, true); 
 }
 
-function showNoHuFromGiaiMa() {
-  giamaModal.classList.add("hidden");
-  giamaModal.style.display = "none";
-  nohuModal.classList.remove("hidden");
-  nohuModal.style.display = "flex";
-  playNoHuSound();
+// Bật tắt các nút hành động cuối game
+function showActionButtons(showRetry, showBack) {
+  guessInput.disabled = true;
+  submitGuessBtn.disabled = true;
+  actionButtons.classList.remove("hidden");
+  
+  retryBtn.style.display = showRetry ? "inline-block" : "none";
+  backSelectBtn.style.display = showBack ? "inline-block" : "none";
 }
 
-function playNoHuSound() {
-  nohuSound.currentTime = 0;
-  nohuSound.play();
-}
+// === BẮT ĐẦU VÒNG CHƠI ===
+function startRound() {
+  stopAllBGM();
+  bgmJustCloud.play(); // Chuyển sang nhạc nền êm dịu khi tập trung
 
-function playCorrectSound() {
-  correctSound.currentTime = 0;
-  correctSound.play();
-}
+  document.getElementById('round-indicator').textContent = `TỪ KHÓA ${currentKeywordIndex + 1}/5`;
 
-function playFireworksSound() {
-  fireworksSound.currentTime = 0;
-  fireworksSound.volume = 0.8;
-  fireworksSound.play();
-}
-
-function stopFireworksSound() {
-  fireworksSound.pause();
-  fireworksSound.currentTime = 0;
-}
-
-// Nút Giải mã (mở modal, nhưng vì giờ là chính, có thể dùng để mở nếu đóng)
-document.getElementById("giai-ma-btn").addEventListener("click", () => {
-  if (currentIndex !== null) {
-    startHangman(currentIndex, isSpecial); // Mở lại current nếu có
-  } else {
-    alert("Chọn một cụm từ từ list để giải mã!");
-  }
-});
-
-// Nút Giải mã đặc biệt
-document.getElementById("giai-ma-dac-biet-btn").addEventListener("click", () => {
-  startHangman(null, true); // null index, special = true
-});
-
-// ==== INTRO LOGIC ====
-document.addEventListener("DOMContentLoaded", () => {
-  const introScreen = document.getElementById("intro-screen");
-  const mainLayout = document.getElementById("main-layout");
-  const introVideo = document.getElementById("intro-video");
-  const unmuteButton = document.getElementById("unmute-button");
-  const skipButton = document.getElementById("skip-button");
-
-  // ẨN TẤT CẢ MODAL
-  const modals = [explainModal, nohuModal, giamaModal];
-  modals.forEach(modal => {
-    if (modal) {
-      modal.classList.add("hidden");
-      modal.style.display = "none";
-    }
+  currentKeyword = keywords[currentKeywordIndex];
+  guessedLetters.clear();
+  
+  const words = currentKeyword.split(' ');
+  words.forEach(word => {
+    if (word.length > 0) guessedLetters.add(normalize(word[0]));
   });
 
-  function startGame() {
-    introScreen.style.display = "none";
-    mainLayout.classList.remove("hidden");
-    mainLayout.style.display = "flex";
-    introVideo.pause();
-    introVideo.currentTime = 0;
-  }
-
-  skipButton.addEventListener("click", startGame);
-
-  unmuteButton.addEventListener("click", () => {
-    introVideo.muted = false;
-    introVideo.play();
-    unmuteButton.textContent = "🔊 Nice";
-    unmuteButton.disabled = true;
-  });
-
-  introVideo.addEventListener("ended", startGame);
-});
+  generateMaskedPhrase();
+  countdownTimer();
+  
+  hintDisplay.textContent = 'Nhập 1 chữ cái hoặc cả cụm từ để giải mã!';
+  hintDisplay.style.color = "#1C3F60";
+  guessInput.value = '';
+  guessInput.disabled = false;
+  submitGuessBtn.disabled = false;
+  actionButtons.classList.add("hidden");
+  guessInput.focus();
+}
